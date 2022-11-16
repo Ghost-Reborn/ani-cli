@@ -455,13 +455,19 @@ play_episode () {
 		inf "Currently downloading $trackma_title ($provider_name)"
 	else
 		inf "Currently playing $trackma_title ($provider_name)"
-		echo "$trackma_title" >> played_anime.txt
+		if ! grep -Fxq "$trackma_title" played_anime.txt
+		then
+    		echo "$trackma_title" >> played_anime.txt
+		fi
 	fi
 	case "$player_fn" in
 		download)
 			if download "$refr" "$video_url" "$trackma_title"; then
 				inf "Downloaded episode: $trackma_title"
-				echo "$trackma_title" >> download_anime.txt
+				if ! grep -Fxq "$trackma_title" download_anime.txt
+				then
+					echo "$trackma_title" >> download_anime.txt
+				fi
 			else
 				err "Download failed episode: $trackma_title , please retry or check your internet connection"
 			fi
