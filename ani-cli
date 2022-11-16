@@ -473,21 +473,81 @@ play_episode () {
 			fi
 			;;
 		iina)
-			nohup "$player_fn" "$video_url" --no-stdin --keep-running --mpv-referrer="$refr" --mpv-force-media-title="$trackma_title" > /dev/null 2>&1 & ;;
+			if ! grep -Fxq "$trackma_title" played_anime.txt
+			then
+				nohup "$player_fn" "$video_url" --no-stdin --keep-running --mpv-referrer="$refr" --mpv-force-media-title="$trackma_title" > /dev/null 2>&1 &
+			else
+				echo "Already watched this episode, rewatch again [y/n]: "
+				read CHOICE
+				if [ "$CHOICE" = "y" ]
+				then
+					nohup "$player_fn" "$video_url" --no-stdin --keep-running --mpv-referrer="$refr" --mpv-force-media-title="$trackma_title" > /dev/null 2>&1 &
+				fi
+			fi;;
 		vlc)
 			if uname -a | grep -qE '[Aa]ndroid';then
-				am start --user 0 -a android.intent.action.VIEW -d "$video_url" -n org.videolan.vlc/org.videolan.vlc.gui.video.VideoPlayerActivity -e "title" "$trackma_title" > /dev/null 2>&1 &
+				if ! grep -Fxq "$trackma_title" played_anime.txt
+				then
+					am start --user 0 -a android.intent.action.VIEW -d "$video_url" -n org.videolan.vlc/org.videolan.vlc.gui.video.VideoPlayerActivity -e "title" "$trackma_title" > /dev/null 2>&1 &
+				else
+					echo "Already watched this episode, rewatch again [y/n]: "
+					read CHOICE
+					if [ "$CHOICE" = "y" ]
+					then
+						am start --user 0 -a android.intent.action.VIEW -d "$video_url" -n org.videolan.vlc/org.videolan.vlc.gui.video.VideoPlayerActivity -e "title" "$trackma_title" > /dev/null 2>&1 &
+					fi
+				fi
 			else
-				nohup "$player_fn" "$video_url"  --http-referrer="$refr" --meta-title "$trackma_title" --play-and-exit > /dev/null 2>&1 &
+				if ! grep -Fxq "$trackma_title" played_anime.txt
+				then
+					nohup "$player_fn" "$video_url"  --http-referrer="$refr" --meta-title "$trackma_title" --play-and-exit > /dev/null 2>&1 &
+				else
+					echo "Already watched this episode, rewatch again [y/n]: "
+					read CHOICE
+					if [ "$CHOICE" = "y" ]
+					then
+						nohup "$player_fn" "$video_url"  --http-referrer="$refr" --meta-title "$trackma_title" --play-and-exit > /dev/null 2>&1 &
+					fi
+				fi
 			fi
 			;;
 		"syncplay"|"/Applications/Syncplay.app/Contents/MacOS/syncplay"|"/c/Program Files (x86)/Syncplay/Syncplay.exe")
-			nohup "$player_fn" "$video_url" -- --referrer="$refr" --force-media-title="$trackma_title" > /dev/null 2>&1 & ;;
+			if ! grep -Fxq "$trackma_title" played_anime.txt
+			then
+				nohup "$player_fn" "$video_url" -- --referrer="$refr" --force-media-title="$trackma_title" > /dev/null 2>&1 &
+			else
+				echo "Already watched this episode, rewatch again [y/n]: "
+				read CHOICE
+				if [ "$CHOICE" = "y" ]
+				then
+					nohup "$player_fn" "$video_url" -- --referrer="$refr" --force-media-title="$trackma_title" > /dev/null 2>&1 &
+				fi
+			fi;;
 		*)
 			if uname -a | grep -qE '[Aa]ndroid';then
-				am start --user 0 -a android.intent.action.VIEW -d "$video_url" -n is.xyz.mpv/.MPVActivity > /dev/null 2>&1 &
+				if ! grep -Fxq "$trackma_title" played_anime.txt
+				then
+					am start --user 0 -a android.intent.action.VIEW -d "$video_url" -n is.xyz.mpv/.MPVActivity > /dev/null 2>&1 &
+				else
+					echo "Already watched this episode, rewatch again [y/n]: "
+					read CHOICE
+					if [ "$CHOICE" = "y" ]
+					then
+						am start --user 0 -a android.intent.action.VIEW -d "$video_url" -n is.xyz.mpv/.MPVActivity > /dev/null 2>&1 &
+					fi
+				fi
 			else
-				nohup "$player_fn" "$video_url" --referrer="$refr" --force-media-title="$trackma_title" > /dev/null 2>&1 &
+				if ! grep -Fxq "$trackma_title" played_anime.txt
+				then
+					nohup "$player_fn" "$video_url" --referrer="$refr" --force-media-title="$trackma_title" > /dev/null 2>&1 &
+				else
+					echo "Already watched this episode, rewatch again [y/n]: "
+					read CHOICE
+					if [ "$CHOICE" = "y" ]
+					then
+						nohup "$player_fn" "$video_url" --referrer="$refr" --force-media-title="$trackma_title" > /dev/null 2>&1 &
+					fi
+				fi
 			fi
 			;;
 	esac
