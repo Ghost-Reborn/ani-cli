@@ -460,6 +460,7 @@ play_episode () {
 		download)
 			if download "$refr" "$video_url" "$trackma_title"; then
 				inf "Downloaded episode: $trackma_title"
+				echo "$trackma_title" >> download_file.txt
 			else
 				err "Download failed episode: $trackma_title , please retry or check your internet connection"
 			fi
